@@ -1,0 +1,30 @@
+{
+  "name": "email-template-builder-be",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "core:build": "tsc -p packages/email-core/tsconfig.json",
+    "core:sync": "npm run core:build && node scripts/sync-core.mjs",
+    "build": "npm run core:build && tsc -p tsconfig.json",
+    "typecheck": "npm run core:build && tsc --noEmit",
+    "dev": "npm run build && node scripts/dev.mjs",
+    "start": "node --env-file-if-exists=.env.local dist/index.js",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "test:http": "node scripts/check-service.mjs"
+  },
+  "dependencies": {
+    "@postly/email-core": "file:packages/email-core",
+    "@supabase/ssr": "0.10.0",
+    "@supabase/supabase-js": "2.110.0",
+    "cookie": "1.1.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
