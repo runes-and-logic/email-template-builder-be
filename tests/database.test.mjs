@@ -73,6 +73,8 @@ test("database validates direct RPC input and rejects duplicate blocks", async (
   });
 });
 test("template quotas and restore checks are enforced at the database boundary", async () => {
+  // Pin the limit this test exercises, independent of the Free plan's current seeded value.
+  await db.query("update plans set document_limit=3 where id='free'");
   await asUser(alice, async () => {
     for (const id of ["email-two","email-three"]) await db.query("select save_document($1,$2::jsonb,0)", [workspace,JSON.stringify(document(id))]);
     await assert.rejects(db.query("select save_document($1,$2::jsonb,0)", [workspace,JSON.stringify(document("email-four"))]), /quota_exceeded/);
@@ -84,6 +86,7 @@ test("template quotas and restore checks are enforced at the database boundary",
   });
 });
 test("asset quota reservations cannot exceed the plan and clients cannot upload directly", async () => {
+  await db.query("update plans set asset_limit=10485760 where id='free'");
   await asUser(alice, async () => {
     for (let index = 0; index < 6; index++) {
       const id = crypto.randomUUID();

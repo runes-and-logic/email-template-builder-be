@@ -58,8 +58,14 @@ export function blockHtml(b: Block) {
     : "left";
   const style = `font-family:${font},sans-serif;font-size:${num(b.size, 8, 72)}px;font-weight:${num(b.weight, 100, 900)};line-height:${num(b.lineHeight, 1, 3)};color:${hex(b.color, "#30283c")};text-align:${align};overflow-wrap:anywhere;`;
   const img = safeUrl(b.src, true);
+  const margin = align === "center" ? "auto" : align === "right" ? "0 0 0 auto" : "0";
+  // Logos keep their aspect ratio within a width share and an 80px height cap, so tall or square logos stay logo-sized.
+  // The width attribute remains for clients that ignore CSS sizing (e.g. Outlook desktop).
+  const sizing = b.kind === "Logo"
+    ? `width:auto;max-width:${num(b.width, 10, 100)}%;max-height:80px;height:auto`
+    : `width:${num(b.width, 10, 100)}%;max-width:100%;height:auto`;
   const image = img
-    ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(b.alt)}" width="${Math.round((560 * num(b.width, 10, 100)) / 100)}" style="display:block;width:${num(b.width, 10, 100)}%;max-width:100%;height:auto;margin:${align === "center" ? "auto" : align === "right" ? "0 0 0 auto" : "0"};border-radius:${num(b.radius, 0, 50)}px">`
+    ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(b.alt)}" width="${Math.round((560 * num(b.width, 10, 100)) / 100)}" style="display:block;${sizing};margin:${margin};border-radius:${num(b.radius, 0, 50)}px">`
     : `<p style="margin:0;color:#766b7e">${escapeHtml(b.alt)}</p>`;
   let content = `<p style="margin:0;${style}">${text}</p>`;
   if (b.kind === "Heading")

@@ -59,6 +59,8 @@ export type BrandKit = {
   website: string;
   socials: string;
 };
+/** Sample link used by starter templates; email checks flag it so it gets replaced before sending. */
+export const SAMPLE_URL = "https://example.com";
 export const defaultBrand: BrandKit = {
   name: "Your business",
   logo: "",
@@ -66,7 +68,8 @@ export const defaultBrand: BrandKit = {
   secondary: "#f1edf7",
   heading: "Georgia",
   body: "Arial",
-  website: "https://example.com",
+  // Empty until the business adds its own site; a placeholder domain would ship real emails with dead links.
+  website: "",
   socials: "",
 };
 export const fonts = ["Arial", "Georgia", "Verdana", "Tahoma", "Trebuchet MS"];
@@ -140,7 +143,7 @@ export function fromTemplate(
     name: data.brand,
     primary: data.color,
     website:
-      typeof legacy?.url === "string" ? legacy.url : defaultBrand.website,
+      typeof legacy?.url === "string" ? legacy.url : SAMPLE_URL,
   };
   const blocks = [
     makeBlock("Logo", brand),

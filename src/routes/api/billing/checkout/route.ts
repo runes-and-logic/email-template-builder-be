@@ -1,9 +1,11 @@
 import { body, context, databaseError, endpoint, HttpError, sameOrigin } from "../../../../lib/server/http.js";
 import { razorpay, type Subscription } from "../../../../lib/server/razorpay.js";
 import { serviceClient } from "../../../../lib/supabase/service.js";
+import { paymentsEnabled } from "../../../../lib/config.js";
 export async function POST(request: Request) {
   return endpoint(async () => {
     sameOrigin(request);
+    if (!paymentsEnabled) throw new HttpError(503, "Paid plans are paused for now. You can keep using the Free plan.");
     const { client, workspaceId, role } = await context();
     if (role !== "owner") throw new HttpError(403, "Only workspace owners can manage billing.");
     const input = await body(request, 1000);
