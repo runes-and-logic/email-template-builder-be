@@ -103,9 +103,9 @@ Not implemented: bulk campaigns, audience/contact management, ESP connectors, re
 
 ## Shared browser-safe email core
 
-`packages/email-core/src/` owns the common document types, validation, sample catalog, email renderer, and checks. It contains no service credentials, database access, cookies, or browser storage. The backend consumes it as a local package. The frontend commits a compiled `vendor/postly-email-core-1.0.0.tgz`, so it can install and deploy without cloning the backend.
+`packages/email-core/src/` owns the common document types, validation, sample catalog, email renderer, and checks. It contains no service credentials, database access, cookies, or browser storage. The backend consumes it as a local package. The frontend commits a compiled `vendor/postly-email-core-<version>.tgz`, so it can install and deploy without cloning the backend.
 
-When changing the shared core, run `npm run core:sync` here, then reinstall the tarball in the customer frontend with `npm install ./vendor/postly-email-core-1.0.0.tgz`. Commit both the source change and the refreshed frontend artifact/lockfile. For a published release, bump the core package version and dependency path together. Browser localStorage functions remain in the frontend's `lib/workspace.ts`.
+When changing the shared core, **always bump the version** in `packages/email-core/package.json` first (build caches such as Vercel's can reuse a same-version tarball and ship stale code). Then run `npm run core:sync` here, install the new tarball in the customer frontend with `npm install ./vendor/postly-email-core-<version>.tgz`, and delete the old tarball. Commit the source change, the new artifact and the frontend `package.json`/lockfile together. Browser localStorage functions remain in the frontend's `lib/workspace.ts`.
 
 ## Existing environment files
 
